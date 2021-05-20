@@ -12,33 +12,36 @@
 	// since there's no dynamic data here, we can prerender
 	// it so that it gets served as a static asset in prod
 	export const prerender = true;
+
+	export const load = async () => {
+		const res = await fetch('https://aws.random.cat/meow');
+		const data = await res.json();
+
+		return {
+			props: {
+				title: 'Cats! :D',
+				image: data.file
+			}
+		};
+	};
+</script>
+
+<script>
+	import { count } from '../stores/store';
+
+	export let title;
+	export let image;
 </script>
 
 <svelte:head>
-	<title>About</title>
+	<title>{title}</title>
 </svelte:head>
 
 <div class="content">
-	<h1>About this app!!</h1>
-
-	<p>
-		This is a <a href="https://kit.svelte.dev">SvelteKit</a> app. You can make your own by typing the
-		following into your command line and following the prompts:
-	</p>
-
-	<!-- TODO lose the @next! -->
-	<pre>npm init svelte@next</pre>
-
-	<p>
-		The page you're looking at is purely static HTML, with no client-side interactivity needed.
-		Because of that, we don't need to load any JavaScript. Try viewing the page's source, or opening
-		the devtools network panel and reloading.
-	</p>
-
-	<p>
-		The <a href="/todos">TODOs</a> page illustrates SvelteKit's data loading and form handling. Try using
-		it with JavaScript disabled!
-	</p>
+	<h1>This page is about {title}</h1>
+	{$count}
+	<button on:click={count.increment}> + </button>
+	<img src={image} alt="cat" style="width: 100%;" />
 </div>
 
 <style>
